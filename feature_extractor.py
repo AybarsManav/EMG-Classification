@@ -66,8 +66,8 @@ class FeatureExtractor:
                 channel_features[channel + '_ft_max'] = np.max(ft_features)
 
                 # Dominant Frequency (index of max frequency component)
-                dominant_freq_idx = np.argmax(ft_features)
                 freqs, psd = self.calculate_psd(signal, fs)
+                dominant_freq_idx = np.argmax(psd)
                 dominant_frequency = freqs[dominant_freq_idx]
                 channel_features[channel + '_dominant_frequency'] = dominant_frequency
 
