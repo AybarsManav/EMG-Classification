@@ -1,8 +1,8 @@
 import sklearn
 from sklearn.metrics import confusion_matrix, classification_report
+import pandas as pd
 
-
-def test_model(model, x_test, y_test, verbose = False):
+def test_model(model, x_test, y_test, verbose = False, save_file_path = None):
     # Predict the labels for the test set
     y_pred = model.predict(x_test)
 
@@ -32,6 +32,7 @@ def test_model(model, x_test, y_test, verbose = False):
 
     # Store the results in a dictionary
     metrics = {
+        'accuracy' : accuracy,
         'precision': precision,
         'recall': recall,
         'f1_scores': f1_scores,
@@ -70,5 +71,12 @@ def test_model(model, x_test, y_test, verbose = False):
         for i, acc in enumerate(class_accuracies):
             print(f'Class {i} Accuracy: {round(acc, 2)}')
 
+        # Save the metrics to csv file
+        if save_file_path is not None:
+            df = pd.DataFrame(columns=['class', 'precision', 'recall', 'f1', 'accuracy'])
+            for i in range(len(precision)):
+                df = df.append({'class': str(i), 'precision': precision[i], 'recall': recall[i], 'f1': f1_scores[i], 'accuracy': class_accuracies[i]}, ignore_index=True)
+            df = df.append({'class': 'average', 'precision': avg_precision, 'recall': avg_recall, 'f1': avg_f1_score, 'accuracy': accuracy}, ignore_index=True)
+            df.to_csv(save_file_path, index=False)
 
     return metrics
